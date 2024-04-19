@@ -59,7 +59,6 @@ if __name__ == "__main__":
 	client = Client(SERVER_HOST, SERVER_PORT, SUPER_PASSWORD)
 	client.send(SUPER_PASSWORD)
 	while True:
-		time.sleep(0.01)
 		data = input(f"[{SERVER_HOST}:{SERVER_PORT}]$ ")
 		if data == "exit":
 			del client.admin_thread
