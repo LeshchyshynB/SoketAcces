@@ -52,10 +52,12 @@ class Server:
 			elif content_splited[0] == "exec" and len(content_splited) > 2:
 				cut = len(content_splited[0])+len(content[1])+2
 				self.exec_on_client(content_splited[1], content[cut:])
+				conn.send(bytes("", "utf-8"))
 			
 			elif content_splited[0] == "cmd" and len(content_splited) > 2:
 				cut = len(content_splited[0])+len(content_splited[1])+2
 				self.cmd_on_client(conn, content_splited[1], content[cut:])
+				conn.send(bytes("", "utf-8"))
 
 			else:
 				conn.send(bytes(f"unknow command: {command.decode()}", "utf-8"))

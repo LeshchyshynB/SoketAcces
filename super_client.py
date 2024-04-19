@@ -19,17 +19,12 @@ class Client:
 		self.SUPER_PASSWORD = password
 		self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.client.connect((self.server_ip, self.port))
-		self.admin_thread = threading.Thread(target=self.connection)
-		self.admin_thread.daemon = True
-		self.admin_thread.start()
+		# self.admin_thread = threading.Thread(target=self.connection)
+		# self.admin_thread.daemon = True
+		# self.admin_thread.start()
 
-	def connection(self) -> None:
-		while True:
-			try:
-				req = self.client.recv(1024)
-				print(req.decode())
-			except:
-				continue
+
+		
 
 
 	def send(self, text: str, encode="utf-8") -> None:
@@ -38,6 +33,20 @@ class Client:
 			self.client.send(text.encode(encode))
 		else:
 			self.client.send(text)
+
+	
+	def send_response(self, text: str, encode="utf-8") -> None:
+		# text = self.SUPER_PASSWORD+"|"+text
+		if encode:
+			self.client.send(text.encode(encode))
+		else:
+			self.client.send(text)
+		while True:
+			try:
+				req = self.client.recv(1024)
+				return req.decode()
+			except:
+				continue
 		
 
 if __name__ == "__main__":
@@ -56,4 +65,4 @@ if __name__ == "__main__":
 			del client.admin_thread
 			exit()
 
-		client.send(data)
+		print(client.send_response(data))
