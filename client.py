@@ -55,9 +55,9 @@ class Client:
 		return
 
 if __name__ == "__main__":
-	# client = Client("26.35.239.192", 7546)
+	# client = Client("26.35.239.192", 7546)	
 	# client = Client("26.172.116.184", 7546)
-	client = Client("192.168.1.100", 7546)
+	client = Client("212.115.110.10", 7546)
 	# client.send("хуй")
 	# client.tcp("input_files/negr.jpg")
 	# client.send("get info")
