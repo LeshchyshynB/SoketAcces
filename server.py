@@ -2,6 +2,8 @@ import socket
 import threading
 import re
 import time
+from datetime import datetime, timezone
+
 
 class Server:
 	def __init__(self, SERVER_IP: str, SERVER_PORT: int, SUPER_PASSWORD: str, output_directory="files") -> None:
@@ -73,7 +75,7 @@ class Server:
 					break
 				else:
 					conn.send(b'0')
-					self.targets_list[addr[0]] = [conn, time.strftime("%d.%m.%Y/%H.%M.%S")]
+					self.targets_list[addr[0]] = [conn, datetime.now(timezone.utc).strftime("%d.%m.%Y/%H.%M.%S"), socket.gethostbyaddr(addr[0])]
 
 			except:
 				print(f"{addr[0]}:{addr[1]}", "was disconnected")
