@@ -1,15 +1,11 @@
 import socket
-import re
 import time
-import threading
-
+from datetime import datetime, timezone
+import pandas as pd
+import ast
+import re
 
 from logic.ftp import ftp_send
-
-import socket
-import re
-import threading
-import time
 
 
 class Client:
@@ -22,9 +18,6 @@ class Client:
 		# self.admin_thread = threading.Thread(target=self.connection)
 		# self.admin_thread.daemon = True
 		# self.admin_thread.start()
-
-
-		
 
 
 	def send(self, text: str, encode="utf-8") -> None:
@@ -61,7 +54,22 @@ if __name__ == "__main__":
 	while True:
 		data = input(f"[{SERVER_HOST}:{SERVER_PORT}]$ ")
 		if data == "exit":
-			del client.admin_thread
+			# del client.admin_thread
 			exit()
 
-		print(client.send_response(data))
+		response = client.send_response(data)
+		if data == "all_clients":
+
+			res = re.findall(r"'(.+?)': \[.+? '(.+?)'\]", response)
+			all_clients_df = {
+				"IP address": [],
+				"Last active": []
+			}
+			for key, value in res:
+				all_clients_df["IP address"].append(key)
+				date1 = datetime.strptime(datetime.now(timezone.utc).strftime("%d.%m.%Y/%H.%M.%S"), f"%d.%m.%Y/%H.%M.%S")
+				date2 = datetime.strptime(value, f"%d.%m.%Y/%H.%M.%S")
+				last_value = date1 - date2
+				all_clients_df["Last active"].append(f"{last_value}")
+
+			print(pd.DataFrame(all_clients_df))
