@@ -17,9 +17,3 @@
 
 # exec("import pyautogui; [pyautogui.mouseDown(button='left'), time.sleep(0.1), pyautogui.mouseUp(button='left')] * 7")
 
-from datetime import datetime, timezone
-value = "21.04.2024/14.36.00"
-date1 = datetime.strptime(datetime.now(timezone.utc).strftime("%d.%m.%Y/%H.%M.%S"), f"%d.%m.%Y/%H.%M.%S")
-date2 = datetime.strptime(value, f"%d.%m.%Y/%H.%M.%S")
-print(date1 - date2)
-print()
