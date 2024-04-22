@@ -17,3 +17,7 @@
 
 # exec("import pyautogui; [pyautogui.mouseDown(button='left'), time.sleep(0.1), pyautogui.mouseUp(button='left')] * 7")
 
+import subprocess
+# cmd = [ 'echo', '1' ]
+output = subprocess.Popen(["dir"], stdout=subprocess.PIPE, shell=True).communicate()[0]
+print(output)
